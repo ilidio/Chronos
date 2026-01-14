@@ -7,7 +7,7 @@ Comprehensive history management for Visual Studio Code. This extension provides
 ### For Developers (Running from Source)
 1. Ensure you have [Node.js](https://nodejs.org/) and `npm` installed.
 2. Clone or download this repository.
-3. Open the `local-history-extension` folder in VS Code.
+3. Open the `Chronos` folder in VS Code.
 4. Run `npm install` in the terminal to install dependencies.
 5. Press **F5** (or go to `Run and Debug` -> `Run Extension`) to launch a new **Extension Development Host** window with the extension active.
 
@@ -16,7 +16,7 @@ If you have a `.vsix` file:
 1. Open VS Code.
 2. Go to the **Extensions** view (`Cmd+Shift+X` or `Ctrl+Shift+X`).
 3. Click the `...` (More Actions) at the top right of the sidebar.
-4. Select **Install from VSIX...** and choose the generated file.
+4. Select **Install from VSIX...** and choose the generated `chronos.vsix` file.
 
 ---
 
@@ -36,12 +36,12 @@ Before starting a complex refactor:
 3. This label will appear in your timeline, making it easy to find that specific version later.
 
 ### 3. Selection History (Granular Tracking)
-- **Chronos:** Select a block of code, right-click -> **Chronos > Show History for Selection**.
-- **Git History:** Select a block of code, right-click -> **Git History for Selection**. This uses Git's powerful logic to show only the commits that modified those specific lines.
+- **Chronos History:** Select a block of code, right-click -> **Chronos > Show History for Selection**.
+- **Git History:** Select a block of code, right-click -> **Chronos > Git History for Selection**. This uses Git's powerful logic to show only the commits that modified those specific lines.
 
 ### 4. Project-Wide History
 Want to see everything you've changed today?
-- Run the command `Chronos: Show Project History` from the Command Palette (`Cmd+Shift+P`).
+- Right-click and select **Chronos > Show Project History** or run the command `Chronos: Show Project History` from the Command Palette (`Cmd+Shift+P`).
 
 ---
 
