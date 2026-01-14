@@ -3,7 +3,7 @@
 # Exit on error
 set -e
 
-echo "🚀 Starting installation for IntelliJ-Style Local History..."
+echo "🚀 Starting installation for Chronos..."
 
 # Check for npm
 if ! command -v npm &> /dev/null; then
@@ -13,7 +13,7 @@ fi
 
 # Clean up
 echo "🧹 Cleaning up..."
-rm -rf out local-history.vsix
+rm -rf out chronos.vsix
 
 echo "📦 Installing dependencies..."
 npm install
@@ -23,10 +23,10 @@ npm run compile
 
 echo "🎁 Packaging extension..."
 # Force bundle dependencies
-yes y | npx @vscode/vsce package --out local-history.vsix
+yes y | npx @vscode/vsce package --out chronos.vsix
 
 # Check size
-FILESIZE=$(stat -f%z local-history.vsix 2>/dev/null || stat -c%s local-history.vsix 2>/dev/null || echo 0)
+FILESIZE=$(stat -f%z chronos.vsix 2>/dev/null || stat -c%s chronos.vsix 2>/dev/null || echo 0)
 if [ "$FILESIZE" -lt 50000 ]; then
     echo "⚠️  WARNING: The generated VSIX is very small ($FILESIZE bytes)."
     echo "    This suggests dependencies are missing. Please ensure 'npm install' ran correctly."
@@ -35,8 +35,8 @@ else
 fi
 
 echo "💿 Installing to VS Code..."
-code --uninstall-extension localhistory-dev.intellij-local-history || true
-code --install-extension local-history.vsix --force
+code --uninstall-extension ilidio.chronos || true
+code --install-extension chronos.vsix --force
 
 echo "✅ Success! The extension has been installed."
 echo "👉 IMPORTANT: Reload VS Code now (Cmd+Shift+P -> 'Developer: Reload Window')."

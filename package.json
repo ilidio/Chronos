@@ -1,13 +1,14 @@
 {
-  "name": "intellij-local-history",
-  "displayName": "IntelliJ-Style Local History",
-  "description": "Replicates IntelliJ IDEA's Local History and Git History context menus.",
+  "name": "chronos",
+  "displayName": "Chronos",
+  "description": "Comprehensive Chronos and Git History tracking for VS Code.",
   "version": "0.0.1",
-  "publisher": "localhistory-dev",
+  "publisher": "ilidio",
   "license": "MIT",
+  "icon": "resources/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/localhistory-dev/intellij-local-history"
+    "url": "https://github.com/ilidio/Chronos"
   },
   "engines": {
     "vscode": "^1.80.0"
@@ -18,40 +19,40 @@
   ],
   "activationEvents": [
     "onStartupFinished",
-    "onCommand:localHistory.showHistory",
-    "onCommand:localHistory.showHistoryForSelection",
-    "onCommand:localHistory.showProjectHistory",
-    "onCommand:localHistory.showRecentChanges",
-    "onCommand:localHistory.putLabel",
-    "onCommand:localHistory.gitHistoryForSelection"
+    "onCommand:chronos.showHistory",
+    "onCommand:chronos.showHistoryForSelection",
+    "onCommand:chronos.showProjectHistory",
+    "onCommand:chronos.showRecentChanges",
+    "onCommand:chronos.putLabel",
+    "onCommand:chronos.gitHistoryForSelection"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Local History",
+      "title": "Chronos",
       "properties": {
-        "localHistory.enabled": {
+        "chronos.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable or disable local history tracking."
+          "description": "Enable or disable Chronos history tracking."
         },
-        "localHistory.maxDays": {
+        "chronos.maxDays": {
           "type": "number",
           "default": 30,
           "description": "Number of days to keep history."
         },
-        "localHistory.maxSizeMB": {
+        "chronos.maxSizeMB": {
           "type": "number",
           "default": 500,
           "description": "Maximum size of history storage in MB."
         },
-        "localHistory.trackSelectionHistory": {
+        "chronos.trackSelectionHistory": {
           "type": "boolean",
           "default": true,
           "description": "Enable tracking history for text selections."
         },
-        "localHistory.exclude": {
+        "chronos.exclude": {
           "type": "array",
           "items": {
             "type": "string"
@@ -63,10 +64,10 @@
           ],
           "description": "Glob patterns to exclude from history."
         },
-        "localHistory.saveInProjectFolder": {
+        "chronos.saveInProjectFolder": {
           "type": "boolean",
           "default": false,
-          "description": "If enabled, local history will be stored in a .history folder in the project root instead of internal extension storage."
+          "description": "If enabled, Chronos history will be stored in a .history folder in the project root instead of internal extension storage."
         },
         "gitHistory.selection.maxCommits": {
           "type": "number",
@@ -87,92 +88,92 @@
     },
     "commands": [
       {
-        "command": "localHistory.showHistory",
+        "command": "chronos.showHistory",
         "title": "Show History",
-        "category": "Local History"
+        "category": "Chronos"
       },
       {
-        "command": "localHistory.showHistoryForSelection",
+        "command": "chronos.showHistoryForSelection",
         "title": "Show History for Selection",
-        "category": "Local History"
+        "category": "Chronos"
       },
       {
-        "command": "localHistory.showProjectHistory",
+        "command": "chronos.showProjectHistory",
         "title": "Show Project History",
-        "category": "Local History"
+        "category": "Chronos"
       },
       {
-        "command": "localHistory.showRecentChanges",
+        "command": "chronos.showRecentChanges",
         "title": "Show Recent Changes",
-        "category": "Local History"
+        "category": "Chronos"
       },
       {
-        "command": "localHistory.putLabel",
+        "command": "chronos.putLabel",
         "title": "Put Label...",
-        "category": "Local History"
+        "category": "Chronos"
       },
       {
-        "command": "localHistory.restoreSnapshot",
+        "command": "chronos.restoreSnapshot",
         "title": "Restore",
-        "category": "Local History"
+        "category": "Chronos"
       },
       {
-        "command": "localHistory.gitHistoryForSelection",
+        "command": "chronos.gitHistoryForSelection",
         "title": "Git History for Selection",
         "category": "Git"
       },
       {
-        "command": "localHistory.compareToCurrent",
+        "command": "chronos.compareToCurrent",
         "title": "Compare with Current",
-        "category": "Local History"
+        "category": "Chronos"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "submenu": "localHistory/context",
+          "submenu": "chronos/context",
           "group": "1_modification"
         },
         {
-          "command": "localHistory.gitHistoryForSelection",
+          "command": "chronos.gitHistoryForSelection",
           "group": "1_modification",
           "when": "editorHasSelection"
         }
       ],
       "explorer/context": [
         {
-          "submenu": "localHistory/context",
+          "submenu": "chronos/context",
           "group": "7_modification"
         }
       ],
-      "localHistory/context": [
+      "chronos/context": [
         {
-          "command": "localHistory.showHistory",
+          "command": "chronos.showHistory",
           "group": "1_history"
         },
         {
-          "command": "localHistory.showHistoryForSelection",
+          "command": "chronos.showHistoryForSelection",
           "group": "1_history",
           "when": "editorHasSelection"
         },
         {
-          "command": "localHistory.showProjectHistory",
+          "command": "chronos.showProjectHistory",
           "group": "2_global"
         },
         {
-          "command": "localHistory.showRecentChanges",
+          "command": "chronos.showRecentChanges",
           "group": "2_global"
         },
         {
-          "command": "localHistory.putLabel",
+          "command": "chronos.putLabel",
           "group": "3_actions"
         }
       ]
     },
     "submenus": [
       {
-        "id": "localHistory/context",
-        "label": "Local History"
+        "id": "chronos/context",
+        "label": "Chronos"
       }
     ]
   },

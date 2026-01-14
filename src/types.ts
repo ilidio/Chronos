@@ -17,7 +17,7 @@ export interface HistoryIndex {
     snapshots: Snapshot[];
 }
 
-export interface LocalHistoryConfig {
+export interface ChronosConfig {
     enabled: boolean;
     maxDays: number;
     maxSizeMB: number;

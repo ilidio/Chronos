@@ -12,7 +12,7 @@ let viewProvider: HistoryViewProvider;
 let gitService: GitService;
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Activating IntelliJ-Style Local History...');
+    console.log('Activating Chronos...');
 
     storage = new HistoryStorage(context);
     viewProvider = new HistoryViewProvider(context.extensionUri);
@@ -20,14 +20,14 @@ export function activate(context: vscode.ExtensionContext) {
     manager = new HistoryManager(context, storage);
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('localHistory.showHistory', showHistory),
-        vscode.commands.registerCommand('localHistory.showHistoryForSelection', showHistoryForSelection),
-        vscode.commands.registerCommand('localHistory.showProjectHistory', showProjectHistory),
-        vscode.commands.registerCommand('localHistory.showRecentChanges', showRecentChanges),
-        vscode.commands.registerCommand('localHistory.putLabel', putLabel),
-        vscode.commands.registerCommand('localHistory.compareToCurrent', compareToCurrent),
-        vscode.commands.registerCommand('localHistory.restoreSnapshot', restoreSnapshot),
-        vscode.commands.registerCommand('localHistory.gitHistoryForSelection', gitHistoryForSelection)
+        vscode.commands.registerCommand('chronos.showHistory', showHistory),
+        vscode.commands.registerCommand('chronos.showHistoryForSelection', showHistoryForSelection),
+        vscode.commands.registerCommand('chronos.showProjectHistory', showProjectHistory),
+        vscode.commands.registerCommand('chronos.showRecentChanges', showRecentChanges),
+        vscode.commands.registerCommand('chronos.putLabel', putLabel),
+        vscode.commands.registerCommand('chronos.compareToCurrent', compareToCurrent),
+        vscode.commands.registerCommand('chronos.restoreSnapshot', restoreSnapshot),
+        vscode.commands.registerCommand('chronos.gitHistoryForSelection', gitHistoryForSelection)
     );
 
     storage.init().catch(err => console.error('Storage init failed:', err));
@@ -83,7 +83,7 @@ async function showHistory(uri?: vscode.Uri, selection?: vscode.Range) {
     const history = await storage.getHistoryForFile(uri);
     
     if (history.length === 0) {
-        vscode.window.showInformationMessage('No local history found for this file.');
+        vscode.window.showInformationMessage('No Chronos history found for this file.');
     }
     
     // Wrap diff provider to include the specific fileUri context
@@ -134,7 +134,7 @@ async function compareToCurrent(snapshotId: string) {
             'vscode.diff',
             snapshotUri,
             editor.document.uri,
-            `Local History: ${new Date(snapshot.timestamp).toLocaleString()} vs Current`
+            `Chronos: ${new Date(snapshot.timestamp).toLocaleString()} vs Current`
         );
     } catch (e) {
         vscode.window.showErrorMessage('Could not open diff.');

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { Snapshot, GitCommit } from '../types';
 
 export class HistoryViewProvider {
-    public static readonly viewType = 'localHistory.historyView';
+    public static readonly viewType = 'chronos.historyView';
 
     constructor(private readonly _extensionUri: vscode.Uri) {}
 
@@ -50,7 +50,7 @@ export class HistoryViewProvider {
     public show(snapshots: Snapshot[], currentFileUri: vscode.Uri | undefined, getDiff?: (s: Snapshot) => Promise<string>, selection?: vscode.Range) {
         const panel = vscode.window.createWebviewPanel(
             HistoryViewProvider.viewType,
-            'Local History',
+            'Chronos',
             vscode.ViewColumn.Two,
             {
                 enableScripts: true,
@@ -78,10 +78,10 @@ export class HistoryViewProvider {
                         });
                         return;
                     case 'compare':
-                        vscode.commands.executeCommand('localHistory.compareToCurrent', message.snapshotId);
+                        vscode.commands.executeCommand('chronos.compareToCurrent', message.snapshotId);
                         return;
                     case 'restore':
-                        vscode.commands.executeCommand('localHistory.restoreSnapshot', message.snapshotId);
+                        vscode.commands.executeCommand('chronos.restoreSnapshot', message.snapshotId);
                         return;
                     case 'getDiff':
                         if (getDiff) {

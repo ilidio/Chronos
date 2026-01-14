@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
 import { HistoryStorage } from './storage';
-import { LocalHistoryConfig } from './types';
+import { ChronosConfig } from './types';
 import { minimatch } from 'minimatch';
 
 export class HistoryManager {
     private storage: HistoryStorage;
-    private config: LocalHistoryConfig;
+    private config: ChronosConfig;
 
     constructor(context: vscode.ExtensionContext, storage: HistoryStorage) {
         this.storage = storage;
         this.config = this.loadConfig();
 
         vscode.workspace.onDidChangeConfiguration(e => {
-            if (e.affectsConfiguration('localHistory')) {
+            if (e.affectsConfiguration('chronos')) {
                 this.config = this.loadConfig();
             }
         });
@@ -22,8 +22,8 @@ export class HistoryManager {
         }
     }
 
-    private loadConfig(): LocalHistoryConfig {
-        const config = vscode.workspace.getConfiguration('localHistory');
+    private loadConfig(): ChronosConfig {
+        const config = vscode.workspace.getConfiguration('chronos');
         return {
             enabled: config.get<boolean>('enabled', true),
             maxDays: config.get<number>('maxDays', 30),

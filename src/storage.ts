@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { Snapshot, HistoryIndex, LocalHistoryConfig } from './types';
+import { Snapshot, HistoryIndex, ChronosConfig } from './types';
 
 export class HistoryStorage {
     private globalStorageRoot: vscode.Uri;
@@ -25,10 +25,9 @@ export class HistoryStorage {
         }
     }
 
-    private async getStorageForFile(fileUri: vscode.Uri): Promise<{ root: vscode.Uri, indexUri: vscode.Uri }> {
-        const config = vscode.workspace.getConfiguration('localHistory');
-        const saveInProject = config.get<boolean>('saveInProjectFolder', false);
-        
+        private async getStorageForFile(fileUri: vscode.Uri): Promise<{ root: vscode.Uri, indexUri: vscode.Uri }> {
+            const config = vscode.workspace.getConfiguration('chronos');
+            const saveInProject = config.get<boolean>('saveInProjectFolder', false);        
         let root = this.globalStorageRoot;
         const workspaceFolder = vscode.workspace.getWorkspaceFolder(fileUri);
         
