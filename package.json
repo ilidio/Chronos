@@ -133,11 +133,6 @@
         {
           "submenu": "chronos/context",
           "group": "1_modification"
-        },
-        {
-          "command": "chronos.gitHistoryForSelection",
-          "group": "1_modification",
-          "when": "editorHasSelection"
         }
       ],
       "explorer/context": [
@@ -149,24 +144,29 @@
       "chronos/context": [
         {
           "command": "chronos.showHistory",
-          "group": "1_history"
+          "group": "1_local"
         },
         {
           "command": "chronos.showHistoryForSelection",
-          "group": "1_history",
+          "group": "1_local",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "chronos.gitHistoryForSelection",
+          "group": "2_git",
           "when": "editorHasSelection"
         },
         {
           "command": "chronos.showProjectHistory",
-          "group": "2_global"
+          "group": "3_global"
         },
         {
           "command": "chronos.showRecentChanges",
-          "group": "2_global"
+          "group": "3_global"
         },
         {
           "command": "chronos.putLabel",
-          "group": "3_actions"
+          "group": "4_actions"
         }
       ]
     },
