@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { HistoryStorage } from './storage';
 import { HistoryManager } from './historyManager';
 import { HistoryViewProvider } from './views/historyWebview';
@@ -55,7 +56,21 @@ async function getDiffForSnapshot(snapshot: Snapshot, fileUri: vscode.Uri): Prom
     if (!snapshot.storagePath) return 'Snapshot has no content.';
     const currentPath = (await storage.getSnapshotUri(snapshot, fileUri)).fsPath;
 
-    return await gitService.getDiff(prevPath, currentPath);
+    let diff = await gitService.getDiff(prevPath, currentPath);
+
+    // Clean up diff header
+    const workspaceFolder = vscode.workspace.getWorkspaceFolder(fileUri);
+    const relativePath = workspaceFolder 
+        ? path.relative(workspaceFolder.uri.fsPath, fileUri.fsPath)
+        : path.basename(fileUri.fsPath);
+
+    // Escape backslashes for regex if on Windows
+    const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    
+    diff = diff.replace(new RegExp(escapeRegex(prevPath), 'g'), 'a/' + relativePath);
+    diff = diff.replace(new RegExp(escapeRegex(currentPath), 'g'), 'b/' + relativePath);
+
+    return diff;
 }
 
 async function showHistory(uri?: vscode.Uri, selection?: vscode.Range) {
