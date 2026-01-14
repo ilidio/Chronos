@@ -132,8 +132,32 @@ export class HistoryStorage {
             .sort((a, b) => b.timestamp - a.timestamp);
     }
 
+    private async refreshIndices(): Promise<void> {
+        // Always ensure global index is loaded
+        const globalIndexUri = vscode.Uri.joinPath(this.globalStorageRoot, 'index.json');
+        await this.loadIndex(globalIndexUri);
+
+        // If enabled, check all workspace folders for local indices
+        const config = vscode.workspace.getConfiguration('chronos');
+        const saveInProject = config.get<boolean>('saveInProjectFolder', false);
+        
+        if (saveInProject && vscode.workspace.workspaceFolders) {
+            for (const folder of vscode.workspace.workspaceFolders) {
+                const localIndexUri = vscode.Uri.joinPath(folder.uri, '.history', 'index.json');
+                try {
+                    await vscode.workspace.fs.stat(localIndexUri);
+                    await this.loadIndex(localIndexUri);
+                } catch {
+                    // Index doesn't exist in this folder, skip
+                }
+            }
+        }
+    }
+
     async getProjectHistory(): Promise<Snapshot[]> {
         await this.init();
+        await this.refreshIndices();
+        
         let all: Snapshot[] = [];
         for (const index of this.indices.values()) {
             all = all.concat(index.snapshots);
@@ -158,7 +182,12 @@ export class HistoryStorage {
         return this.saveQueue;
     }
 
-    async createLabel(name: string, description?: string) {
+    async createLabel(name: string, description?: string, document?: vscode.TextDocument) {
+        if (document) {
+            await this.saveSnapshot(document, 'label', name, description);
+            return;
+        }
+
         let targetUri = this.globalStorageRoot;
         if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
             targetUri = vscode.workspace.workspaceFolders[0].uri;

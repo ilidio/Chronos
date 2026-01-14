@@ -94,7 +94,7 @@ export class HistoryManager {
 
     private async onDelete(e: vscode.FileDeleteEvent) {}
 
-    public async putLabel(name: string, description?: string) {
-        await this.storage.createLabel(name, description);
+    public async putLabel(name: string, description?: string, document?: vscode.TextDocument) {
+        await this.storage.createLabel(name, description, document);
     }
 }

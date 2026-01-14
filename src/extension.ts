@@ -116,24 +116,42 @@ async function putLabel() {
     const name = await vscode.window.showInputBox({ prompt: 'Label Name' });
     if (!name) return;
     const desc = await vscode.window.showInputBox({ prompt: 'Description (optional)' });
-    await manager.putLabel(name, desc);
+    
+    const editor = vscode.window.activeTextEditor;
+    await manager.putLabel(name, desc, editor?.document);
 }
 
-async function compareToCurrent(snapshotId: string) {
+async function compareToCurrent(snapshotId: string, filePath?: string) {
     await ensureStorage();
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) return;
+    
+    let fileUri: vscode.Uri | undefined;
+    if (filePath && vscode.workspace.workspaceFolders) {
+        for (const folder of vscode.workspace.workspaceFolders) {
+            const candidate = vscode.Uri.joinPath(folder.uri, filePath);
+            try {
+                await vscode.workspace.fs.stat(candidate);
+                fileUri = candidate;
+                break;
+            } catch {}
+        }
+    }
 
-    const history = await storage.getHistoryForFile(editor.document.uri);
+    if (!fileUri) {
+        fileUri = vscode.window.activeTextEditor?.document.uri;
+    }
+    
+    if (!fileUri) return;
+
+    const history = await storage.getHistoryForFile(fileUri);
     const snapshot = history.find(s => s.id === snapshotId);
     if (!snapshot) return;
 
     try {
-        const snapshotUri = await storage.getSnapshotUri(snapshot, editor.document.uri);
+        const snapshotUri = await storage.getSnapshotUri(snapshot, fileUri);
         await vscode.commands.executeCommand(
             'vscode.diff',
             snapshotUri,
-            editor.document.uri,
+            fileUri,
             `Chronos: ${new Date(snapshot.timestamp).toLocaleString()} vs Current`
         );
     } catch (e) {
@@ -141,21 +159,41 @@ async function compareToCurrent(snapshotId: string) {
     }
 }
 
-async function restoreSnapshot(snapshotId: string) {
+async function restoreSnapshot(snapshotId: string, filePath?: string) {
     await ensureStorage();
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) return;
+    
+    let fileUri: vscode.Uri | undefined;
+    if (filePath && vscode.workspace.workspaceFolders) {
+        for (const folder of vscode.workspace.workspaceFolders) {
+            const candidate = vscode.Uri.joinPath(folder.uri, filePath);
+            try {
+                await vscode.workspace.fs.stat(candidate);
+                fileUri = candidate;
+                break;
+            } catch {}
+        }
+    }
 
-    const history = await storage.getHistoryForFile(editor.document.uri);
+    if (!fileUri) {
+        fileUri = vscode.window.activeTextEditor?.document.uri;
+    }
+
+    if (!fileUri) return;
+
+    const history = await storage.getHistoryForFile(fileUri);
     const snapshot = history.find(s => s.id === snapshotId);
     if (!snapshot) return;
 
-    const snapshotUri = await storage.getSnapshotUri(snapshot, editor.document.uri);
+    const snapshotUri = await storage.getSnapshotUri(snapshot, fileUri);
     const content = await vscode.workspace.fs.readFile(snapshotUri);
     
-    const fullRange = new vscode.Range(0, 0, editor.document.lineCount, 0);
+    // Open the document if not already open
+    const doc = await vscode.workspace.openTextDocument(fileUri);
+    await vscode.window.showTextDocument(doc);
+
+    const fullRange = new vscode.Range(0, 0, doc.lineCount, 0);
     const edit = new vscode.WorkspaceEdit();
-    edit.replace(editor.document.uri, fullRange, new TextDecoder().decode(content));
+    edit.replace(fileUri, fullRange, new TextDecoder().decode(content));
     await vscode.workspace.applyEdit(edit);
 }
 

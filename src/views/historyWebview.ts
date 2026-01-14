@@ -20,7 +20,7 @@ export class HistoryViewProvider {
             .label-badge { background: var(--vscode-badge-background); color: var(--vscode-badge-foreground); padding: 2px 8px; border-radius: 10px; display: inline-block; font-size: 0.8em; margin: 4px 0; }
             .main-view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
             .details-header { padding: 20px; border-bottom: 1px solid var(--vscode-panel-border); background-color: var(--vscode-editor-background); z-index: 10; }
-            .meta-title { font-size: 1.2em; font-weight: 600; margin-bottom: 4px; }
+            .meta-title { font-size: 1.2em; font-weight: 600; margin-bottom: 4px; max-height: 4.8em; overflow-y: auto; word-wrap: break-word; }
             .meta-info { opacity: 0.7; font-size: 0.9em; }
             .actions { margin-top: 15px; display: flex; gap: 8px; }
             .actions button { 
@@ -78,10 +78,10 @@ export class HistoryViewProvider {
                         });
                         return;
                     case 'compare':
-                        vscode.commands.executeCommand('chronos.compareToCurrent', message.snapshotId);
+                        vscode.commands.executeCommand('chronos.compareToCurrent', message.snapshotId, message.filePath);
                         return;
                     case 'restore':
-                        vscode.commands.executeCommand('chronos.restoreSnapshot', message.snapshotId);
+                        vscode.commands.executeCommand('chronos.restoreSnapshot', message.snapshotId, message.filePath);
                         return;
                     case 'getDiff':
                         if (getDiff) {
@@ -177,6 +177,7 @@ export class HistoryViewProvider {
                                 '<span>' + date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}) + '</span>' + 
                             '</div>' + 
                             (s.label ? '<div class="label-badge">' + s.label + '</div>' : '') + 
+                            '<div style="font-size:0.75em; opacity:0.6; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">' + s.filePath + '</div>' +
                             '<div style="font-size:0.85em; opacity:0.6">' + date.toLocaleDateString() + '</div>' + 
                         '</div>';
                     }).join('');
@@ -189,10 +190,10 @@ export class HistoryViewProvider {
                     
                     document.getElementById('detailsHeader').style.display = 'block';
                     document.getElementById('metaTitle').textContent = s.label || (s.eventType.charAt(0).toUpperCase() + s.eventType.slice(1) + ' Snapshot');
-                    document.getElementById('metaInfo').textContent = new Date(s.timestamp).toLocaleString();
+                    document.getElementById('metaInfo').textContent = (s.filePath ? s.filePath + ' • ' : '') + new Date(s.timestamp).toLocaleString();
                     
-                    document.getElementById('btnRestore').onclick = () => vscode.postMessage({ command: 'restore', snapshotId: s.id });
-                    document.getElementById('btnCompare').onclick = () => vscode.postMessage({ command: 'compare', snapshotId: s.id });
+                    document.getElementById('btnRestore').onclick = () => vscode.postMessage({ command: 'restore', snapshotId: s.id, filePath: s.filePath });
+                    document.getElementById('btnCompare').onclick = () => vscode.postMessage({ command: 'compare', snapshotId: s.id, filePath: s.filePath });
                     
                     document.getElementById('diffContainer').innerHTML = '<div class="empty-state">Loading changes...</div>';
                     vscode.postMessage({ command: 'getDiff', snapshotId: s.id });
