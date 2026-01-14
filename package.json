@@ -1,0 +1,198 @@
+{
+  "name": "intellij-local-history",
+  "displayName": "IntelliJ-Style Local History",
+  "description": "Replicates IntelliJ IDEA's Local History and Git History context menus.",
+  "version": "0.0.1",
+  "publisher": "localhistory-dev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localhistory-dev/intellij-local-history"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "SCM",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:localHistory.showHistory",
+    "onCommand:localHistory.showHistoryForSelection",
+    "onCommand:localHistory.showProjectHistory",
+    "onCommand:localHistory.showRecentChanges",
+    "onCommand:localHistory.putLabel",
+    "onCommand:localHistory.gitHistoryForSelection"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Local History",
+      "properties": {
+        "localHistory.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable local history tracking."
+        },
+        "localHistory.maxDays": {
+          "type": "number",
+          "default": 30,
+          "description": "Number of days to keep history."
+        },
+        "localHistory.maxSizeMB": {
+          "type": "number",
+          "default": 500,
+          "description": "Maximum size of history storage in MB."
+        },
+        "localHistory.trackSelectionHistory": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable tracking history for text selections."
+        },
+        "localHistory.exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/.git/**"
+          ],
+          "description": "Glob patterns to exclude from history."
+        },
+        "localHistory.saveInProjectFolder": {
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, local history will be stored in a .history folder in the project root instead of internal extension storage."
+        },
+        "gitHistory.selection.maxCommits": {
+          "type": "number",
+          "default": 100,
+          "description": "Maximum number of commits to show in selection history."
+        },
+        "gitHistory.selection.followRenames": {
+          "type": "boolean",
+          "default": true,
+          "description": "Follow file renames when tracing history."
+        },
+        "gitHistory.selection.dateFormat": {
+          "type": "string",
+          "default": "yyyy-MM-dd HH:mm",
+          "description": "Date format for git history (date-fns format)."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "localHistory.showHistory",
+        "title": "Show History",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.showHistoryForSelection",
+        "title": "Show History for Selection",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.showProjectHistory",
+        "title": "Show Project History",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.showRecentChanges",
+        "title": "Show Recent Changes",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.putLabel",
+        "title": "Put Label...",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.restoreSnapshot",
+        "title": "Restore",
+        "category": "Local History"
+      },
+      {
+        "command": "localHistory.gitHistoryForSelection",
+        "title": "Git History for Selection",
+        "category": "Git"
+      },
+      {
+        "command": "localHistory.compareToCurrent",
+        "title": "Compare with Current",
+        "category": "Local History"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "localHistory/context",
+          "group": "1_modification"
+        },
+        {
+          "command": "localHistory.gitHistoryForSelection",
+          "group": "1_modification",
+          "when": "editorHasSelection"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "localHistory/context",
+          "group": "7_modification"
+        }
+      ],
+      "localHistory/context": [
+        {
+          "command": "localHistory.showHistory",
+          "group": "1_history"
+        },
+        {
+          "command": "localHistory.showHistoryForSelection",
+          "group": "1_history",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "localHistory.showProjectHistory",
+          "group": "2_global"
+        },
+        {
+          "command": "localHistory.showRecentChanges",
+          "group": "2_global"
+        },
+        {
+          "command": "localHistory.putLabel",
+          "group": "3_actions"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "localHistory/context",
+        "label": "Local History"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/uuid": "^9.0.0",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^2.19.0",
+    "typescript": "^5.1.0"
+  },
+  "dependencies": {
+    "date-fns": "^2.30.0",
+    "glob": "^10.0.0",
+    "minimatch": "^9.0.0",
+    "simple-git": "^3.19.0",
+    "uuid": "^9.0.0"
+  }
+}
