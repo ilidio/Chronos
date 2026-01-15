@@ -18,6 +18,31 @@ If you have a `.vsix` file:
 3. Click the `...` (More Actions) at the top right of the sidebar.
 4. Select **Install from VSIX...** and choose the generated `chronos.vsix` file.
 
+## 📦 Publishing to Marketplace
+
+To package or publish the extension, you need the VS Code Extension Manager (`vsce`):
+
+1. **Install vsce globally:**
+   ```bash
+   npm install -g @vscode/vsce
+   ```
+
+2. **Login to your publisher account:**
+   ```bash
+   vsce login IldioMartins
+   ```
+
+3. **Create the .vsix package:**
+   This command generates a file named `chronos-0.0.1.vsix` (the filename includes the version from `package.json`):
+   ```bash
+   vsce package
+   ```
+
+4. **Publish the extension:**
+   ```bash
+   vsce publish
+   ```
+
 ---
 
 ## 📖 How to Use in VS Code
