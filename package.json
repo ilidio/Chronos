@@ -2,7 +2,7 @@
   "name": "chronos-history",
   "displayName": "Chronos History",
   "description": "Comprehensive Chronos and Git History tracking for VS Code.",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "publisher": "IldioMartins",
   "license": "MIT",
   "icon": "resources/icon.png",
@@ -173,7 +173,7 @@
     "submenus": [
       {
         "id": "chronos/context",
-        "label": "Chronos"
+        "label": "Chronos History"
       }
     ]
   },

@@ -5,6 +5,16 @@ set -e
 
 echo "🚀 Starting build process for Chronos..."
 
+# Optional: Increment version
+if [ -n "$1" ]; then
+    if [[ "$1" == "patch" || "$1" == "minor" || "$1" == "major" ]]; then
+        echo "Cw Incrementing version ($1)..."
+        npm version $1 --no-git-tag-version
+    else
+        echo "ℹ️  Argument '$1' is not a standard version type (patch/minor/major). Skipping auto-increment."
+    fi
+fi
+
 # Check for npm
 if ! command -v npm &> /dev/null; then
     echo "❌ Error: npm is not installed."
