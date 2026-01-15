@@ -2,12 +2,14 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { HistoryStorage } from './storage';
 import { HistoryManager } from './historyManager';
+import { HistoryFilter } from './historyFilter';
 import { HistoryViewProvider } from './views/historyWebview';
 import { GitService } from './git/gitService';
 import { Snapshot } from './types';
 
 let storage: HistoryStorage;
 let manager: HistoryManager;
+let historyFilter: HistoryFilter;
 let viewProvider: HistoryViewProvider;
 let gitService: GitService;
 
@@ -18,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
     viewProvider = new HistoryViewProvider(context.extensionUri);
     gitService = new GitService();
     manager = new HistoryManager(context, storage);
+    historyFilter = new HistoryFilter(storage, gitService);
 
     context.subscriptions.push(
         vscode.commands.registerCommand('chronos.showHistory', showHistory),
@@ -96,7 +99,31 @@ async function showHistoryForSelection() {
     await ensureStorage();
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
-    await showHistory(editor.document.uri, editor.selection);
+
+    const uri = editor.document.uri;
+    const history = await storage.getHistoryForFile(uri);
+
+    if (history.length === 0) {
+        vscode.window.showInformationMessage('No Chronos history found for this file.');
+        return;
+    }
+
+    try {
+        const filteredHistory = await historyFilter.filterHistoryForSelection(history, uri, editor.selection);
+        
+        if (filteredHistory.length === 0) {
+            vscode.window.showInformationMessage('No history found for this selection.');
+            return;
+        }
+
+        // Wrap diff provider to include the specific fileUri context
+        const diffProvider = (s: Snapshot) => getDiffForSnapshot(s, uri);
+        
+        viewProvider.show(filteredHistory, uri, diffProvider, editor.selection);
+    } catch (e) {
+        console.error('Error filtering history:', e);
+        vscode.window.showErrorMessage('Failed to filter history for selection.');
+    }
 }
 
 async function showProjectHistory() {
